@@ -26,7 +26,7 @@ class AnimalsTestCase(TestCase):
         response = self.client.get(reverse('population'))
 
         self.assertEquals(response.status_code, 200)
-        self.assertEquals(response.content, b'2')
+        self.assertEquals(int(response.content), 2)
 
     def test_animal_view(self):
         response = self.client.get(reverse('animal'), data={'name': 'Tetley'})
