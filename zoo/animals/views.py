@@ -68,4 +68,20 @@ class HungryAnimalsView(View):
 
 
 class FeedAnimalView(View):
-    pass
+    """Feed an Animal: Update its last_feed_time to the current time.
+    """
+    model = Animal
+
+    def post(self, request, *args, **kwargs):
+        animal_name = request.POST.get('name')
+        try:
+            animal = self.model.objects.get(name=animal_name)
+        except self.model.DoesNotExist:
+            return HttpResponse(
+                status=422,
+                content=f'Could not find Animal named {animal_name}'
+            )
+
+        animal.last_feed_time = timezone.now()
+        animal.save()
+        return HttpResponse(status=204)

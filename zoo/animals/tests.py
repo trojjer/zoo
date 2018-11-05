@@ -85,3 +85,16 @@ class AnimalsTestCase(TestCase):
 
         self.assertEquals(response.status_code, 200)
         self.assertEquals(int(response.content), hungry_count)
+
+    def test_feed_animal_view(self):
+        data = {'name': 'Tetley'}
+        response = self.client.post(reverse('feed-animal'), data=data)
+        self.assertEquals(response.status_code, 204, response.content)
+
+        response = self.client.get(reverse('hungry-animals'))
+        self.assertEquals(int(response.content), 0)
+
+    def test_feed_animal_view_not_found(self):
+        data = {'name': 'Foo'}
+        response = self.client.post(reverse('feed-animal'), data=data)
+        self.assertEquals(response.status_code, 422, response.content)
