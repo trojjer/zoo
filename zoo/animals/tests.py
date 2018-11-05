@@ -1,3 +1,5 @@
+import json
+
 from django.test import TestCase
 from django.urls import reverse
 
@@ -11,11 +13,33 @@ class AnimalsTestCase(TestCase):
         chimps = Species.objects.create(name='Chimpanzee')
         hyenas = Species.objects.create(name='Spotted hyena')
 
-        Animal.objects.create(name='Tetley', species=chimps)
-        Animal.objects.create(name='Shenzi', species=hyenas)
+        self.tetley = Animal.objects.create(name='Tetley', species=chimps)
+        self.shenzi = Animal.objects.create(name='Shenzi', species=hyenas)
 
     def test_population_view(self):
         response = self.client.get(reverse('population'))
 
         self.assertEquals(response.status_code, 200)
         self.assertEquals(response.content, b'2')
+
+    def test_animal_view(self):
+        response = self.client.get(reverse('animal'), data={'name': 'Tetley'})
+
+        self.assertEquals(response.status_code, 200)
+        response_data = json.loads(response.content)
+        self.assertEquals(response_data['name'], self.tetley.name)
+        self.assertEquals(response_data['species'], self.tetley.species.name)
+        self.assertEquals(
+            response_data['last_feed_time'],
+            str(self.tetley.last_feed_time)
+        )
+
+    def test_animal_view_not_found(self):
+        response = self.client.get(reverse('animal'), data={'name': 'Smith'})
+
+        self.assertEquals(response.status_code, 404)
+
+    def test_animal_view_no_name(self):
+        response = self.client.get(reverse('animal'))
+
+        self.assertEquals(response.status_code, 404)
