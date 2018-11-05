@@ -1,5 +1,5 @@
 # Zoo
-A basic CRUD demo featuring an API for animals at a zoo.
+A basic CRUD demo featuring an API for animals at a zoo. SQLite DB, Django 2.1.3.
 
 ## About this code
 I've tested the endpoints with Django test cases as best as I can think to do.
