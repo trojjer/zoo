@@ -10,11 +10,11 @@ class AnimalsTestCase(TestCase):
     """Some basic tests for the Animals app.
     """
     def setUp(self):
-        chimps = Species.objects.create(name='Chimpanzee')
-        hyenas = Species.objects.create(name='Spotted hyena')
+        self.chimps = Species.objects.create(name='Chimpanzee')
+        self.hyenas = Species.objects.create(name='Spotted hyena')
 
-        self.tetley = Animal.objects.create(name='Tetley', species=chimps)
-        self.shenzi = Animal.objects.create(name='Shenzi', species=hyenas)
+        self.tetley = Animal.objects.create(name='Tetley', species=self.chimps)
+        self.shenzi = Animal.objects.create(name='Shenzi', species=self.hyenas)
 
     def test_population_view(self):
         response = self.client.get(reverse('population'))
@@ -43,3 +43,32 @@ class AnimalsTestCase(TestCase):
         response = self.client.get(reverse('animal'))
 
         self.assertEquals(response.status_code, 404)
+
+    def test_animal_create_view(self):
+        animal_count = Animal.objects.count()
+        data = {'name': 'Izzy', 'species': self.hyenas}
+        response = self.client.post(reverse('animal'), data=data)
+
+        print(response.content)
+        self.assertEquals(response.status_code, 401)
+        self.assertEquals(Animal.objects.count(), animal_count + 1)
+        response_data = json.loads(response.content)
+        self.assertEquals(response_data['name'], 'Izzy')
+
+    def test_animal_create_view_invalid_name(self):
+        animal_count = Animal.objects.count()
+        data = {'name': 'x' * 40, 'species': self.hyenas}
+        response = self.client.post(reverse('animal'), data=data)
+
+        self.assertEquals(response.status_code, 422)
+        self.assertTrue(b'name' in response.content)
+        self.assertEquals(Animal.objects.count(), animal_count)
+
+    def test_animal_create_view_duplicate_name(self):
+        animal_count = Animal.objects.count()
+        data = {'name': 'Shenzi', 'species': self.hyenas}
+        response = self.client.post(reverse('animal'), data=data)
+
+        self.assertEquals(response.status_code, 422)
+        self.assertTrue(b'duplicate' in response.content)
+        self.assertEquals(Animal.objects.count(), animal_count)
