@@ -13,7 +13,7 @@ Note: There was no index page specified in the document, so the following URL pa
 * `animals/feed/`: On POST, attempts to 'feed' the animal with a given name in the request data.
 
 ## What I'd rather have done
-Django Rest Framework with URL routing and ViewSets are something I'm quite fond of these days, for pure API work.
+Django Rest Framework with URL routing and ViewSets is something I'm quite fond of these days, for pure API work.
 
 ## Django version
 I avoided a CVE alert on Github by bumping the Django version to 2.1.3, which didn't seem to have any noticeable effect on the nature of the assessment as far as I can tell.
