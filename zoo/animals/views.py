@@ -1,7 +1,9 @@
+from datetime import timedelta
+
 from django.views.generic import View
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404
-from django.forms import ValidationError
+from django.utils import timezone
 
 from .models import Animal
 from .forms import AnimalModelForm
@@ -50,3 +52,20 @@ class AnimalView(View):
         animal_keys = ['name', 'species', 'last_feed_time']
         animal_data = {k: str(getattr(animal, k)) for k in animal_keys}
         return JsonResponse(animal_data)
+
+
+class HungryAnimalsView(View):
+    """Show a count of the animals which haven't been fed for at least 2 days.
+    """
+    model = Animal
+
+    def get(self, *args, **kwargs):
+        hungry_filter = {
+            'last_feed_time__lte': timezone.now() - timedelta(days=2)
+        }
+        hungry_count = self.model.objects.filter(**hungry_filter).count()
+        return HttpResponse(hungry_count)
+
+
+class FeedAnimalView(View):
+    pass

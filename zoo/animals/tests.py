@@ -1,7 +1,9 @@
 import json
+from datetime import timedelta
 
 from django.test import TestCase
 from django.urls import reverse
+from django.utils import timezone
 
 from .models import Animal, Species
 
@@ -13,7 +15,11 @@ class AnimalsTestCase(TestCase):
         self.chimps = Species.objects.create(name='Chimpanzee')
         self.hyenas = Species.objects.create(name='Spotted hyena')
 
-        self.tetley = Animal.objects.create(name='Tetley', species=self.chimps)
+        self.tetley = Animal.objects.create(
+            name='Tetley',
+            species=self.chimps,
+            last_feed_time=timezone.now() - timedelta(days=3),
+        )
         self.shenzi = Animal.objects.create(name='Shenzi', species=self.hyenas)
 
     def test_population_view(self):
@@ -72,3 +78,10 @@ class AnimalsTestCase(TestCase):
         self.assertEquals(response.status_code, 422)
         self.assertTrue(b'duplicate' in response.content)
         self.assertEquals(Animal.objects.count(), animal_count)
+
+    def test_hungry_animals_view(self):
+        hungry_count = 1
+        response = self.client.get(reverse('hungry-animals'))
+
+        self.assertEquals(response.status_code, 200)
+        self.assertEquals(int(response.content), hungry_count)
