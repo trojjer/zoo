@@ -29,7 +29,8 @@ class AnimalsTestCase(TestCase):
         self.assertEquals(int(response.content), 2)
 
     def test_animal_view(self):
-        response = self.client.get(reverse('animal'), data={'name': 'Tetley'})
+        data = {'name': 'Tetley'}
+        response = self.client.get(reverse('animal', kwargs=data))
 
         self.assertEquals(response.status_code, 200)
         response_data = json.loads(response.content)
@@ -41,7 +42,8 @@ class AnimalsTestCase(TestCase):
         )
 
     def test_animal_view_not_found(self):
-        response = self.client.get(reverse('animal'), data={'name': 'Smith'})
+        data = {'name': 'Smith'}
+        response = self.client.get(reverse('animal', kwargs=data))
 
         self.assertEquals(response.status_code, 404)
 

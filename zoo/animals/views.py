@@ -27,7 +27,7 @@ class AnimalView(View):
     def get(self, request, *args, **kwargs):
         """Retrieve Animal by name, if it exists.
         """
-        animal_name = request.GET.get('name')
+        animal_name = kwargs.get('name')
         animal = get_object_or_404(self.model, name=animal_name)
         return self._get_json_response(animal)
 
