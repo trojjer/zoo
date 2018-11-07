@@ -8,7 +8,8 @@ I've tested the endpoints with Django test cases as best as I can think to do. I
 Note: There was no index page specified in the document, so the following URL paths are all accessible from the `animals/` app root:
 
 * `animals/population/`: Count of animals in the zoo.
-* `animals/animal/?name=Tetley`: Retrieve data for the example animal named Tetley on a GET. On POST, attempt to create a new animal.
+* `GET animals/animal/Tetley/`: Retrieve data for the example animal named Tetley.
+* `POST animals/animal/`: Attempt to create a new animal.
 * `animals/hungry/`: Responds with a plain count of the number of animals who haven't eaten in the past 2 days (`last_feed_time`).
 * `animals/feed/`: On POST, attempts to 'feed' the animal with a given name in the request data.
 
