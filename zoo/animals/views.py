@@ -38,7 +38,7 @@ class AnimalView(View):
 
         if form.is_valid():
             response = self._get_json_response(form.save())
-            response.status_code = 401
+            response.status_code = 201
             return response
 
         return HttpResponse(status=422, content=f'Errors: {form.errors}')
