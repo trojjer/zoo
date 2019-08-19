@@ -58,7 +58,7 @@ class AnimalsTestCase(TestCase):
         response = self.client.post(reverse('animal'), data=data)
 
         print(response.content)
-        self.assertEquals(response.status_code, 401)
+        self.assertEquals(response.status_code, 201)
         self.assertEquals(Animal.objects.count(), animal_count + 1)
         response_data = json.loads(response.content)
         self.assertEquals(response_data['name'], 'Izzy')
